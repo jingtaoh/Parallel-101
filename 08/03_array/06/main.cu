@@ -4,7 +4,7 @@
 
 __global__ void kernel(int *arr, int n) {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
-    if (i > n) return;
+    if (i >= n) return;
     arr[i] = i;
 }
 
@@ -14,7 +14,7 @@ int main() {
     checkCudaErrors(cudaMallocManaged(&arr, n * sizeof(int)));
 
     int nthreads = 128;
-    int nblocks = (n + nthreads + 1) / nthreads;
+    int nblocks = (n + nthreads - 1) / nthreads;
     kernel<<<nblocks, nthreads>>>(arr, n);
 
     checkCudaErrors(cudaDeviceSynchronize());
